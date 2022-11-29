@@ -1,25 +1,51 @@
-include "lists.h"
+#include "lists.h"
 
+int check(listint_t *ptr, int n, listint_t *now);
 /**
- * check_cycle - checks if a linked list contains a cycle
- * @list: linked list to check
- *
- * Return: 1 if the list has a cycle, 0 if it doesn't
+ * check_cycle - checks if linked list is a cycle
+ * @list: the linked list
+ * Return: 0 if there's no cycle, 1 if there's a cycle
  */
 int check_cycle(listint_t *list)
 {
-	listint_t *slow = list;
-	listint_t *fast = list;
+	listint_t *ptr;
+	int f = 0;
+	listint_t *current;
 
-	if (!list)
-		return (0);
+	current = list;
+	ptr = list;
 
-	while (slow && fast && fast->next)
+	while (current != NULL)
 	{
-		slow = slow->next;
-		fast = fast->next->next;
-		if (slow == fast)
+		if (check(ptr, f, current) == 1)
+		{
 			return (1);
+		}
+		f++;
+		current = current->next;
+	}
+
+	return (0);
+}
+
+/**
+ * check - checks to see if linked list can ber reached again
+ * @ptr: head
+ * @n: position
+ * @now: current list
+ * Return: 1 if it does, 0 if it doesn't
+ */
+int check(listint_t *ptr, int n, listint_t *now)
+{
+	int i;
+
+	for (i = 0; i < n; i++)
+	{
+		if (ptr == now)
+		{
+			return (1);
+		}
+		ptr = ptr->next;
 	}
 
 	return (0);
