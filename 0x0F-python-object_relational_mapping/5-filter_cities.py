@@ -1,34 +1,18 @@
 #!/usr/bin/python3
-"""
-Script that lists all `cities` in the `cities` table of `Alx-Holberton schools`
-where the city's state matches the argument `state name`.
-Arguments:
-    mysql username (str)
-    mysql password (str)
-    database name (str)
-    state name (str)
-"""
-
-import sys
+"""  lists all states from the database hbtn_0e_0_usa """
 import MySQLdb
+import sys
+
 
 if __name__ == "__main__":
-    mySQL_u = sys.argv[1]
-    mySQL_p = sys.argv[2]
-    db_name = sys.argv[3]
-
-    state_name = sys.argv[4]
-
-    # By default, it will connect to localhost:3306
-    db = MySQLdb.connect(user=mySQL_u, passwd=mySQL_p, db=db_name)
+    db = MySQLdb.connect(host="localhost", user=sys.argv[1],
+                         passwd=sys.argv[2], db=sys.argv[3], port=3306)
     cur = db.cursor()
-
-    cur.execute("SELECT c.name \
-                 FROM cities c INNER JOIN states s \
-                 ON c.state_id = s.id WHERE s.name = %s\
-                 ORDER BY c.id", (state_name, ))
+    cur.execute("""SELECT cities.name FROM
+                cities INNER JOIN states ON states.id=cities.state_id
+                WHERE states.name=%s""", (sys.argv[4],))
     rows = cur.fetchall()
-
-    for i in range(len(rows)):
-        print(rows[i][0], end=", " if i + 1 < len(rows) else "")
-    print("")
+    tmp = list(row[0] for row in rows)
+    print(*tmp, sep=", ")
+    cur.close()
+    db.close()
